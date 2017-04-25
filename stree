@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+##
+# SourceTree control from your terminal (macOS only)
+# Last updated on 2017-04-25
+# Contributors:
+#   Blake Knight <oss.ideas@gmail.com> (http://blakek.me/)
+##
+
+showHelp() {
+	cat <<-END
+		Usage: stree [-c|--create] [-h|--help] [directory]
+
+		Arguments:
+		  directory       directory to open in SourceTree (default is current)
+
+		Options:
+		  -c, --create    prompt to create a repo if it does not already exist
+		  -h, --help      show this help text
+	END
+}
+
+main() {
+	if [[ "$#" -eq 0 ]]; then
+		args=$(git rev-parse --show-toplevel)
+	else
+		args="$@"
+	fi
+
+	if [[ ! "${args}" ]]; then
+		exit 1
+	elif [[ "${args}" == '-c' || "${args}" == '--create' ]]; then
+		args='.'
+	elif [[ "${args}" == '-h' || "${args}" == '--help' ]]; then
+		showHelp
+		exit
+	fi
+
+	open -a SourceTree "${args}"
+}
+
+main $@
